@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { router } from "./routes.js";
 import cors from 'cors'
 
+const port = 3000;
 const app = express();
 app.use(cors())
 
@@ -21,8 +22,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+//using router where route is defined
 app.use(router);
 
-app.listen(3000, () => {
-  console.log("server is up on port 3000");
+app.listen(port, () => {
+  console.log(`server is up on port ${port}`);
 });

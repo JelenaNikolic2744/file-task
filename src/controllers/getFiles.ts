@@ -5,6 +5,7 @@ interface Files {
     fileUrl: string
 }
 
+//calling functions to get and sort data, returning sorted data in requested form
 export async function getFiles(req: Request, res: Response, next: NextFunction): Promise<Response> {
     let files = await getExternalAPI()
     if (!files) {
@@ -16,7 +17,7 @@ export async function getFiles(req: Request, res: Response, next: NextFunction):
     return res.send(sortedData)
 }
 
-//create JSON tree structure
+//utilising basic tree data structure for creating a valid file directory mapping. Returning formatted json directory structure
 function sortFiles(data: Files[]): any {
     const treeRoot = {};
     data.forEach((item) => {
@@ -62,13 +63,13 @@ function checkIsFile(element: string, index: number, segments: string[]): boolea
     return index === segments.length - 1 && element.includes(".");
 }
 
-//break down into valid segments. replaces url.parse
+//transforming url from string and extracting host from that url. Spliting into segments fileUrl string by / 
 function formatLinkRemoveHttp(file: string): { host: string, segments: string[] } {
     const validUrl = new URL(file);
     return { host: validUrl.host, segments: validUrl.pathname.split("/").filter(Boolean) }
 }
 
-//get external API
+//get data from provided external API
 async function getExternalAPI(): Promise<any> {
     return await axios.get('https://rest-test-eight.vercel.app/api/test')
 }
