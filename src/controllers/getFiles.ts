@@ -7,10 +7,16 @@ interface Files {
 
 export async function getFiles(req: Request, res: Response, next: NextFunction): Promise<Response> {
     let files = await getExternalAPI()
+    if (!files) {
+        res.status(400).send({
+            message: 'Error'
+        });
+    }
     let sortedData = sortFiles(files.data.items)
     return res.send(sortedData)
 }
 
+//create JSON tree structure
 function sortFiles(data: Files[]): any {
     const treeRoot = {};
     data.forEach((item) => {
@@ -20,7 +26,6 @@ function sortFiles(data: Files[]): any {
             if (!treeRoot[host]) {
                 treeRoot[host] = [];
             }
-
             let currentStructure = treeRoot[host];
 
             segments.forEach((element, index) => {
@@ -34,7 +39,6 @@ function sortFiles(data: Files[]): any {
                     let existingDir = checkIsDirectoryAdded(currentStructure, element)
 
                     if (!existingDir) {
-                        //create a new directory as an array
                         existingDir = { [element]: [] };
                         currentStructure.push(existingDir);
                     }
